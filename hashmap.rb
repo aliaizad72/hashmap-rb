@@ -10,7 +10,7 @@ class HashMap
     @buckets = Array.new(4, nil)
   end
 
-  def grow_buckets
+  def grow_buckets # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     load_factor = @buckets.filter { |bucket| !bucket.nil? }.length / @buckets.length.to_f
     return if load_factor < 0.75
 
@@ -84,6 +84,38 @@ class HashMap
     i
   end
 
+  def keys
+    node_values(0)
+  end
+
+  def values
+    node_values(1)
+  end
+
+  def entries
+    entries = []
+    key_array = keys
+    values_array = values
+    length.times do |ind|
+      entries[ind] = [key_array[ind], values_array[ind]]
+    end
+    entries
+  end
+
+  def node_values(index)
+    array = []
+    @buckets.each do |linked_list|
+      next if linked_list.nil?
+
+      cursor = linked_list.head
+      until cursor.nil?
+        array.push(cursor.value[index])
+        cursor = cursor.next_node
+      end
+    end
+    array
+  end
+
   def clear
     @buckets = Array.new(4, nil)
   end
@@ -114,11 +146,11 @@ class HashMap
   def to_s
     str = ''
     @buckets.each_with_index do |linked_list, i|
-      if linked_list.nil?
-        str += "#{i}: nil\n"
-      else
-        str += "#{i}: #{linked_list}\n"
-      end
+      str += if linked_list.nil?
+               "#{i}: nil\n"
+             else
+               "#{i}: #{linked_list}\n"
+             end
     end
     str
   end
@@ -133,4 +165,5 @@ nfl.set('Detroit', 'Lions')
 nfl.set('Houston', 'Texans')
 nfl.set('Tennessee', 'Titans')
 
-puts nfl
+p nfl.keys
+p nfl.entries
