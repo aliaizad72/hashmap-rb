@@ -74,6 +74,16 @@ class HashMap
     node
   end
 
+  def length
+    i = 0
+    @buckets.each do |linked_list|
+      next if linked_list.nil?
+
+      i += linked_list.size
+    end
+    i
+  end
+
   def key_in_bucket?(index, key)
     linked_list = @buckets[index]
     cursor = linked_list.head
@@ -101,4 +111,4 @@ hash = HashMap.new
 hash.set('Jeor', 'Mormont')
 hash.set('Jon', 'Snow')
 hash.remove('Jeor')
-p hash
+p hash.length
