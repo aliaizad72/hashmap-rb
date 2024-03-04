@@ -65,6 +65,16 @@ class HashMap
     key_in_bucket?(bucket_index, key)
   end
 
+  def remove(key)
+    return unless has?(key)
+
+    bucket_index = hash(key, @buckets.length)
+    node = find_node_with_key(bucket_index, key)
+    node_index = @buckets[bucket_index].find(node.value)
+    @buckets[bucket_index].remove_at(node_index)
+    node
+  end
+
   def key_in_bucket?(index, key)
     linked_list = @buckets[index]
     cursor = linked_list.head.next_node
@@ -90,7 +100,6 @@ end
 
 hash = HashMap.new
 hash.set('Jeor', 'Mormont')
-hash.set('Jorah', 'Mormont')
 hash.set('Jon', 'Snow')
-hash.set('Theon', 'Greyjoy')
-p hash.has?('Jeor')
+hash.remove('Jeor')
+p hash
