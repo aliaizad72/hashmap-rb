@@ -43,7 +43,7 @@ class HashMap
       array[bucket_index] = LinkedList.new
       array[bucket_index].append(bucket_index)
       array[bucket_index].append([key, value])
-    elsif key_already_exist?(bucket_index, key)
+    elsif key_in_bucket?(bucket_index, key)
       change_node_value(bucket_index, key, value)
     else
       array[bucket_index].append([key, value])
@@ -60,7 +60,12 @@ class HashMap
     find_node_with_key(bucket_index, key).value[1]
   end
 
-  def key_already_exist?(index, key)
+  def has?(key)
+    bucket_index = hash(key, @buckets.length)
+    key_in_bucket?(bucket_index, key)
+  end
+
+  def key_in_bucket?(index, key)
     linked_list = @buckets[index]
     cursor = linked_list.head.next_node
     until cursor.nil?
@@ -85,5 +90,7 @@ end
 
 hash = HashMap.new
 hash.set('Jeor', 'Mormont')
+hash.set('Jorah', 'Mormont')
+hash.set('Jon', 'Snow')
 hash.set('Theon', 'Greyjoy')
-p hash.get('Jeor')
+p hash.has?('Jeor')
