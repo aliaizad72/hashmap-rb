@@ -3,7 +3,7 @@
 require './linked_list.rb'
 
 # class HashMap that is made of an Array of LinkedList
-class HashMap
+class HashSet
   attr_accessor :buckets, :load_factor
 
   def initialize
@@ -21,7 +21,7 @@ class HashMap
 
       cursor = linked_list.head
       until cursor.nil?
-        add(cursor.value[0], cursor.value[1], new_buckets)
+        add(cursor.value, new_buckets)
         cursor = cursor.next_node
       end
     end
@@ -36,27 +36,22 @@ class HashMap
     hash_code % table_size
   end
 
-  def add(key, value, array)
+  def add(key, array)
     bucket_index = hash(key, array.length)
 
     if array[bucket_index].nil?
       array[bucket_index] = LinkedList.new
-      array[bucket_index].append([key, value])
+      array[bucket_index].append(key)
     elsif key_in_array?(bucket_index, key, array)
-      change_node_value(bucket_index, key, value)
+      nil
     else
-      array[bucket_index].append([key, value])
+      array[bucket_index].append(key)
     end
   end
 
-  def set(key, value)
+  def set(key)
     grow_buckets
-    add(key, value, @buckets)
-  end
-
-  def get(key)
-    bucket_index = hash(key, @buckets.length)
-    find_node_with_key(bucket_index, key).value[1]
+    add(key, @buckets)
   end
 
   def has?(key)
@@ -85,31 +80,13 @@ class HashMap
   end
 
   def keys
-    node_values(0)
-  end
-
-  def values
-    node_values(1)
-  end
-
-  def entries
-    entries = []
-    key_array = keys
-    values_array = values
-    length.times do |ind|
-      entries[ind] = [key_array[ind], values_array[ind]]
-    end
-    entries
-  end
-
-  def node_values(index)
     array = []
     @buckets.each do |linked_list|
       next if linked_list.nil?
 
       cursor = linked_list.head
       until cursor.nil?
-        array.push(cursor.value[index])
+        array.push(cursor.value)
         cursor = cursor.next_node
       end
     end
@@ -125,21 +102,17 @@ class HashMap
     cursor = linked_list.head
 
     until cursor.nil?
-      return true if cursor.value[0] == key
+      return true if cursor.value == key
 
       cursor = cursor.next_node
     end
     false
   end
 
-  def change_node_value(index, key, value)
-    find_node_with_key(index, key).value[1] = value
-  end
-
   def find_node_with_key(index, key)
     linked_list = @buckets[index]
     cursor = linked_list.head
-    cursor = cursor.next_node until cursor.value[0] == key
+    cursor = cursor.next_node until cursor.value == key
     cursor
   end
 
@@ -155,3 +128,5 @@ class HashMap
     str
   end
 end
+
+set = HashSet.new
