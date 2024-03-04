@@ -42,7 +42,7 @@ class HashMap
     if array[bucket_index].nil?
       array[bucket_index] = LinkedList.new
       array[bucket_index].append([key, value])
-    elsif key_in_bucket?(bucket_index, key)
+    elsif key_in_array?(bucket_index, key, array)
       change_node_value(bucket_index, key, value)
     else
       array[bucket_index].append([key, value])
@@ -61,7 +61,7 @@ class HashMap
 
   def has?(key)
     bucket_index = hash(key, @buckets.length)
-    key_in_bucket?(bucket_index, key)
+    key_in_array?(bucket_index, key, @buckets)
   end
 
   def remove(key)
@@ -88,9 +88,10 @@ class HashMap
     @buckets = Array.new(4, nil)
   end
 
-  def key_in_bucket?(index, key)
-    linked_list = @buckets[index]
+  def key_in_array?(index, key, array)
+    linked_list = array[index]
     cursor = linked_list.head
+
     until cursor.nil?
       return true if cursor.value[0] == key
 
@@ -109,9 +110,27 @@ class HashMap
     cursor = cursor.next_node until cursor.value[0] == key
     cursor
   end
+
+  def to_s
+    str = ''
+    @buckets.each_with_index do |linked_list, i|
+      if linked_list.nil?
+        str += "#{i}: nil\n"
+      else
+        str += "#{i}: #{linked_list}\n"
+      end
+    end
+    str
+  end
 end
 
-hash = HashMap.new
-hash.set('Jeor', 'Mormont')
-hash.set('Jon', 'Snow')
-p hash
+nfl = HashMap.new
+nfl.set('Buffalo', 'Bills')
+nfl.set('Pittsburgh', 'Steelers')
+nfl.set('Miami', 'Dolphins')
+nfl.set('Denver', 'Broncos')
+nfl.set('Detroit', 'Lions')
+nfl.set('Houston', 'Texans')
+nfl.set('Tennessee', 'Titans')
+
+puts nfl
