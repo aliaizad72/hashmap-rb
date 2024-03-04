@@ -19,7 +19,7 @@ class HashMap
     @buckets.each do |linked_list|
       next if linked_list.nil?
 
-      cursor = linked_list.head.next_node
+      cursor = linked_list.head
       until cursor.nil?
         add(cursor.value[0], cursor.value[1], new_buckets)
         cursor = cursor.next_node
@@ -41,7 +41,6 @@ class HashMap
 
     if array[bucket_index].nil?
       array[bucket_index] = LinkedList.new
-      array[bucket_index].append(bucket_index)
       array[bucket_index].append([key, value])
     elsif key_in_bucket?(bucket_index, key)
       change_node_value(bucket_index, key, value)
@@ -77,7 +76,7 @@ class HashMap
 
   def key_in_bucket?(index, key)
     linked_list = @buckets[index]
-    cursor = linked_list.head.next_node
+    cursor = linked_list.head
     until cursor.nil?
       return true if cursor.value[0] == key
 
@@ -92,7 +91,7 @@ class HashMap
 
   def find_node_with_key(index, key)
     linked_list = @buckets[index]
-    cursor = linked_list.head.next_node
+    cursor = linked_list.head
     cursor = cursor.next_node until cursor.value[0] == key
     cursor
   end
